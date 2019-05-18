@@ -571,7 +571,7 @@ void Rsw::recalculateQuadTree(Gnd* gnd)
 		}
 		if (node->bbox.min.y == MAP_MAX)
 			node->bbox.min.y = 0;
-		if (node->bbox.max.y = MAP_MIN)
+		if (node->bbox.max.y == MAP_MIN)
 			node->bbox.max.y = 0;
 
 		node->range[0] = (node->bbox.max - node->bbox.min) / 2.0f;
@@ -598,6 +598,20 @@ void Rsw::recalculateQuadTree(Gnd* gnd)
 			}
 		});
 	}
+
+	nodes.clear();
+	quadtree->foreachLevel([&nodes](Rsw::QuadTreeNode* node, int level) { nodes.push_back(node); });
+	std::vector<glm::vec3> qf;
+
+	for (auto it : nodes)
+	{
+		qf.push_back(it->bbox.max);
+		qf.push_back(it->bbox.min);
+		qf.push_back(it->range[0]);
+		qf.push_back(it->range[1]);
+	}
+	quadtreeFloats = qf;
+
 	Log::out << "Done recalculating quadtree" << Log::newline;
 }
 
